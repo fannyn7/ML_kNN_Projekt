@@ -71,7 +71,7 @@ public class NearestNeighbor extends ANearestNeighbor {
 	}
 	@Override
 	protected String[] getMatrikelNumbers() {
-		return new String[] {"2709749",""};
+		return new String[] {"2709749","2878405"};
 	}
 
 }
