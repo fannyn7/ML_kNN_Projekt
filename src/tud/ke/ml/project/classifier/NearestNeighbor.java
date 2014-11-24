@@ -71,8 +71,7 @@ public class NearestNeighbor extends ANearestNeighbor {
 	}
 	@Override
 	protected String[] getMatrikelNumbers() {
-		// TODO Auto-generated method stub
-		return null;
+		return new String[] {"2709749",""};
 	}
 
 }
