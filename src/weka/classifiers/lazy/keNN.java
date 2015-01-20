@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import tud.ke.ml.project.classifier.NearestNeighbor;
 import weka.classifiers.AbstractClassifier;
+import weka.core.Attribute;
 import weka.core.Capabilities;
 import weka.core.Instance;
 import weka.core.Instances;
