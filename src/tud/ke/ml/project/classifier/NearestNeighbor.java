@@ -1,7 +1,9 @@
 package tud.ke.ml.project.classifier;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +29,13 @@ public class NearestNeighbor extends ANearestNeighbor {
 	@Override
 	protected Object vote(List<Pair<List<Object>, Double>> subset) {
 		Map<Object, Double> map;
+		//System.out.println(subset.size());
 		if (isInverseWeighting()){
 			map = getWeightedVotes(subset);
 		} else {
 			map = getUnweightedVotes(subset);			
 		}
+		//System.out.println(map.size());
 		return getWinner(map);
 	}
 	@Override
@@ -41,14 +45,30 @@ public class NearestNeighbor extends ANearestNeighbor {
 	@Override
 	protected Map<Object, Double> getUnweightedVotes(
 			List<Pair<List<Object>, Double>> subset) {
-		
-		return null;
+		Map<Object, Double> unweightedVotes = new HashMap<Object, Double>();
+		for (Pair<List<Object>, Double> pair : subset){
+			Object classAttributeValue = pair.getA().get(pair.getA().size()-1);
+			if (unweightedVotes.containsKey(classAttributeValue)){
+				unweightedVotes.put(classAttributeValue, unweightedVotes.get(classAttributeValue)+1);
+			} else {
+				unweightedVotes.put(classAttributeValue, (double) 1);
+			}
+		}
+		return unweightedVotes;
 	}
 	@Override
 	protected Map<Object, Double> getWeightedVotes(
 			List<Pair<List<Object>, Double>> subset) {
-		
-		return null;
+		Map<Object, Double> unweightedVotes = new HashMap<Object, Double>();
+		for (Pair<List<Object>, Double> pair : subset){
+			Object classAttributeValue = pair.getA().get(pair.getA().size()-1);
+			if (unweightedVotes.containsKey(classAttributeValue)){
+				unweightedVotes.put(classAttributeValue, unweightedVotes.get(classAttributeValue)+(1/pair.getB()));
+			} else {
+				unweightedVotes.put(classAttributeValue, 1/pair.getB());
+			}
+		}
+		return unweightedVotes;
 	}
 	@Override
 	protected Object getWinner(Map<Object, Double> votesFor) {
@@ -64,7 +84,7 @@ public class NearestNeighbor extends ANearestNeighbor {
 	}
 	@Override
 	protected List<Pair<List<Object>, Double>> getNearest(List<Object> testdata) {
-		List<Pair<List<Object>, Double>> nearest = null;
+		List<Pair<List<Object>, Double>> nearest = new ArrayList<Pair<List<Object>, Double>>() ;
 		double distance;
 		for (int i=0; i< traindata.size(); i++){
 			if (getMetric()==0){
@@ -72,10 +92,10 @@ public class NearestNeighbor extends ANearestNeighbor {
 			} else {
 				distance = determineEuclideanDistance(traindata.get(i), testdata);				
 			}
-			nearest.set(i, new Pair(traindata.get(i), distance));
+			nearest.add(new Pair(traindata.get(i), distance));
 		}
 		Collections.sort(nearest);
-		return nearest.subList(0, getkNearest()-1);
+		return nearest.subList(0, getkNearest());
 	}
 	@Override
 	protected double determineManhattanDistance(List<Object> instance1,
