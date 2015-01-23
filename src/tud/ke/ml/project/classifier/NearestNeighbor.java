@@ -86,6 +86,13 @@ public class NearestNeighbor extends ANearestNeighbor {
 	protected List<Pair<List<Object>, Double>> getNearest(List<Object> testdata) {
 		List<Pair<List<Object>, Double>> nearest = new ArrayList<Pair<List<Object>, Double>>() ;
 		double distance;
+		double[][] factors = normalizationScaling();
+		scaling = new double[factors.length];
+		translation = new double[factors.length];
+		for (int i=0; i< factors.length; i++){
+			scaling[i] = factors[i][0];
+			translation[i] = factors[i][1];			
+		}
 		for (int i=0; i< traindata.size(); i++){
 			if (getMetric()==0){
 				distance = determineManhattanDistance(traindata.get(i), testdata);
@@ -129,8 +136,35 @@ public class NearestNeighbor extends ANearestNeighbor {
 	}
 	@Override
 	protected double[][] normalizationScaling() {
-		// TODO Auto-generated method stub
-		return null;
+		int nbAttributes = traindata.get(0).size();
+		double[][] factors = new double[nbAttributes][2];
+		if (isNormalizing()){
+			for (int attribut = 0; attribut < nbAttributes; attribut++){
+				double max = Integer.MIN_VALUE;
+				double min = Integer.MAX_VALUE;
+				for (int i = 0; i < traindata.size(); i++){
+					if (traindata.get(i).get(attribut) instanceof Double){
+						double value = (Double) traindata.get(i).get(attribut);
+						if ( value > max){
+							max = value;
+						}
+						if (value < min){
+							min = value;
+						}
+					}
+				}
+				factors[attribut][0] = max - min; 
+				factors[attribut][1] = min;					
+			}			
+		} else {
+			for (int attribut = 0; attribut < nbAttributes; attribut++){
+				for (int i = 0; i < traindata.size(); i++){
+					factors[attribut][0] = 1; 
+					factors[attribut][1] = 0;					
+				}
+			}
+		}
+		return factors;
 	}
 	@Override
 	protected String[] getMatrikelNumbers() {
