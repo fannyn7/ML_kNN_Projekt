@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/Users/Fanny/Documents/2014_2015_Darmstadt/MaschinellesLernen/weka-3-7-11/weka-3-7-11/weka.jar"/>
+	<classpathentry kind="lib" path="/Users/simondif/Documents/TUD/Maschinelles Lernen/weka-3-7-11/weka.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

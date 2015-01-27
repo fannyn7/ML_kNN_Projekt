@@ -261,8 +261,6 @@ public class AdvancedValidation {
 				wekaClassifier.buildClassifier(train);
 				double myClass = classifier.classifyInstance(instance);
 				double wekaClass = wekaClassifier.classifyInstance(instance);
-				myClass = classifier.classifyInstance(instance);
-				wekaClass = wekaClassifier.classifyInstance(instance);
 				assertEquals("Instance: ["+instance.toString()+"] classified differently: ",wekaClass,myClass,0);
 			}
 		}

@@ -37,12 +37,12 @@ public class Pair<A,B> implements java.lang.Comparable {
 		return toString().hashCode();
 	}
 	
-	   public int compareTo(Object other) { 
-		      double nombre1 = (double) ((Pair<A,B>) other).getB(); 
-		      double nombre2 = (double) this.getB(); 
-		      if (nombre1 > nombre2)  return -1; 
-		      else if(nombre1 == nombre2) return 0; 
-		      else return 1; 
-		   }  
+	public int compareTo(Object other) { 
+		double nombre1 = (Double) ((Pair<A,B>) other).getB(); 
+		double nombre2 = (Double) this.getB(); 
+		if (nombre1 > nombre2)  return -1; 
+		else if(nombre1 == nombre2) return 0; 
+		else return 1; 
+	}  
 
 }
