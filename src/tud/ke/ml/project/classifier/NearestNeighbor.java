@@ -29,18 +29,20 @@ public class NearestNeighbor extends ANearestNeighbor {
 	@Override
 	protected Object vote(List<Pair<List<Object>, Double>> subset) {
 		Map<Object, Double> map;
-		//System.out.println(subset.size());
+		//System.out.println(subset);
 		if (isInverseWeighting()){
 			map = getWeightedVotes(subset);
 		} else {
 			map = getUnweightedVotes(subset);			
 		}
-		//System.out.println(map.size());
 		return getWinner(map);
 	}
 	@Override
 	protected void learnModel(List<List<Object>> traindata) {
 				this.traindata = traindata;
+				//for (int i = 0; i < traindata.size(); i++){
+				//	System.out.println("traindata : " + traindata.get(i));					
+				//}
 	}
 	@Override
 	protected Map<Object, Double> getUnweightedVotes(
@@ -63,9 +65,9 @@ public class NearestNeighbor extends ANearestNeighbor {
 		for (Pair<List<Object>, Double> pair : subset){
 			Object classAttributeValue = pair.getA().get(pair.getA().size()-1);
 			if (weightedVotes.containsKey(classAttributeValue)){
-				weightedVotes.put(classAttributeValue, weightedVotes.get(classAttributeValue)+(1/(pair.getB()*pair.getB())));
+				weightedVotes.put(classAttributeValue, weightedVotes.get(classAttributeValue)+(1/(pair.getB()/**pair.getB()*/)));
 			} else {
-				weightedVotes.put(classAttributeValue, 1/(pair.getB()*pair.getB()));
+				weightedVotes.put(classAttributeValue, 1/(pair.getB()/**pair.getB()*/));
 			}
 		}
 		return weightedVotes;
@@ -74,21 +76,27 @@ public class NearestNeighbor extends ANearestNeighbor {
 	protected Object getWinner(Map<Object, Double> votesFor) {
 		List<Map.Entry<Object, Double>> maxEntries = new ArrayList<Map.Entry<Object, Double>>();
 		Map.Entry<Object, Double> maxEntry = null;
+		System.out.println();
+		//for (Object o : votesFor.keySet()){
+		//	System.out.println("class : " + o + " - weight : " + votesFor.get(o));
+		//}
 		for (Map.Entry<Object, Double> entry : votesFor.entrySet())
 		{
-			if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) == 0)
+			if (maxEntries.isEmpty() || entry.getValue().compareTo(maxEntries.get(0).getValue()) == 0)
 		    {
+				//System.out.println(entry.getValue());
 			    maxEntries.add( entry);		    		
-		    }
-			if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0)
+		    } else if (entry.getValue().compareTo(maxEntries.get(0).getValue()) > 0)
 		    {
 				maxEntries.clear();
+				//System.out.println(entry.getValue());
 			    maxEntries.add( entry);		    		
 		    }
 		}
 		Random r = new Random();
     	int n = r.nextInt(maxEntries.size());
     	maxEntry = maxEntries.get(n);
+    	//System.out.println("winner : " + maxEntry);
 		return maxEntry.getKey();
 	}
 	@Override
@@ -111,40 +119,56 @@ public class NearestNeighbor extends ANearestNeighbor {
 			nearest.add(new Pair(traindata.get(i), distance));
 		}
 		Collections.sort(nearest);
-		System.out.println();
-		for (int i = 0; i < nearest.size(); i++)
-		System.out.println(nearest.get(i).getB());
+		//System.out.println();
+		//for (int i = 0; i < nearest.size(); i++)
+		//System.out.println(nearest.get(i).getB());
 		int NbNearest = getkNearest();
-		while ((NbNearest < nearest.size()) && (nearest.get(NbNearest-1) == nearest.get(NbNearest))) NbNearest++;
+		//if (NbNearest < nearest.size()) System.out.println("taille");
+		//if (nearest.get(NbNearest-1).getB().equals(nearest.get(NbNearest).getB())) System.out.println("egal !!!");
+		while ((NbNearest < nearest.size()) && (nearest.get(NbNearest-1).getB().equals(nearest.get(NbNearest).getB()))){
+			NbNearest++;
+		}
+		//System.out.println("nbNearest : " + Math.min(NbNearest,nearest.size()));
+		//System.out.println("distance1 : " + nearest.get(NbNearest-1).getB() + "  distance2 : " + nearest.get(NbNearest).getB());
 		return nearest.subList(0, Math.min(NbNearest,nearest.size()));
 	}
 	@Override
 	protected double determineManhattanDistance(List<Object> instance1,
 			List<Object> instance2) {
 		double distance = 0;
-		for (int i=0; i<instance1.size(); i++){
+		//System.out.println(instance1);
+		//System.out.println(instance2);
+		
+		for (int i=0; i<instance1.size()-1; i++){
 			if (instance1.get(i) instanceof Double ){
-				distance += Math.abs((((Double)instance1.get(i)-translation[i])/scaling[i])-(((Double)instance2.get(i)-translation[i])/scaling[i])) ;				
+				if (scaling[i]!=0){
+					distance += Math.abs((((Double)instance1.get(i)-translation[i])/scaling[i])-(((Double)instance2.get(i)-translation[i])/scaling[i])) ;
+				}
 			} else {
 				if (!instance1.get(i).equals(instance2.get(i))){
 					distance += 1;
 				}
 			}
 		}
+		//System.out.println("manhattan : " + distance);
+		
 		return distance;
 	}
 	@Override
 	protected double determineEuclideanDistance(List<Object> instance1,
 			List<Object> instance2) {
 		double distance = 0;
-		for (int i=0; i<instance1.size(); i++){
+		for (int i=0; i<instance1.size()-1; i++){
 			if (instance1.get(i) instanceof Double ){
 				if (scaling[i]!=0){
 					Double a =((((Double)instance1.get(i)-translation[i])/scaling[i]));
 					Double b = (((Double)instance2.get(i)-translation[i])/scaling[i]);
-					System.out.println("a : " + a + " scaling[i] = " + scaling[i]);
-					System.out.println("b : " + b);
-
+					//if (a > 1 || a < 0 || b > 1 || b < 0){
+					//	System.out.println("aNN : " + (Double)instance1.get(i) + "   bNN : " + (Double)instance2.get(i));
+					//	System.out.println("aN : " + a + "   bN : " + b);
+					//	System.out.println("translation : " + translation[i] + "   scaling : " + scaling[i]);						
+					//}
+					
 					distance += ((((Double)instance1.get(i)-translation[i])/scaling[i])-(((Double)instance2.get(i)-translation[i])/scaling[i]))*((((Double)instance1.get(i)-translation[i])/scaling[i])-(((Double)instance2.get(i)-translation[i])/scaling[i]));				
 				}
 			} else {
@@ -153,18 +177,18 @@ public class NearestNeighbor extends ANearestNeighbor {
 				}
 			}
 		}
-		
 		return Math.sqrt(distance);
 	}
 	@Override
 	protected double[][] normalizationScaling() {
-		int nbAttributes = traindata.get(0).size();
+		int nbAttributes = traindata.get(0).size() - 1;
 		double[][] factors = new double[nbAttributes][2];
 		if (isNormalizing()){
 			for (int attribut = 0; attribut < nbAttributes; attribut++){
 				double max = Integer.MIN_VALUE;
 				double min = Integer.MAX_VALUE;
 				for (int i = 0; i < traindata.size(); i++){
+					//System.out.print(traindata.get(i).get(attribut) + "   ");
 					if (traindata.get(i).get(attribut) instanceof Double){
 						double value = (Double) traindata.get(i).get(attribut);
 						if ( value > max){
@@ -175,6 +199,9 @@ public class NearestNeighbor extends ANearestNeighbor {
 						}
 					}
 				}
+				//System.out.println();
+				//System.out.println("max : " + max);
+				//System.out.println("min : " + min);
 				factors[attribut][0] = max - min; 
 				factors[attribut][1] = min;					
 			}			

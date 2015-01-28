@@ -36,7 +36,7 @@ public class SimpleValidation {
 		ArffLoader loader = new ArffLoader();
 		Instances instances;
 		
-		loader.setFile(new File("data/credit-g.arff"));
+		loader.setFile(new File("data/contact-lenses.arff"));
 		instances = loader.getDataSet();
 		instances.setClassIndex(instances.numAttributes()-1);
 		data.add(instances);
@@ -187,7 +187,12 @@ public class SimpleValidation {
 			classifier.buildClassifier(train);
 			wekaClassifier.buildClassifier(train);
 			Instances test = Filter.useFilter(instances, filterTest);
+			int i = 1;
 			for(Instance instance : test) {
+				System.out.println();
+				System.out.println("instance " + i + " : " + instance);
+				
+				i++;
 				double myClass = classifier.classifyInstance(instance);
 				double wekaClass = wekaClassifier.classifyInstance(instance);
 				assertEquals("Instance: ["+instance.toString()+"] classified differently: ",wekaClass,myClass,0);
